@@ -1,5 +1,5 @@
 from langchain.agents import create_agent
-from langchain_groq import ChatGroq
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from src.tools.tools import scrape_url, web_search
@@ -7,26 +7,24 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-llm = ChatGroq(
-    model="qwen/qwen3.8-27b",
-    temperature=0,
-    max_retries=5,
+llm = ChatGoogleGenerativeAI(
+    model="gemini-3.1-flash-lite", # or gemini-2.5-pro
     max_tokens=None,
-    timeout=None
-    )
+    timeout=None,
+)
 
 # First Agent
-def build_scrape_agent():
+def build_reader_agent():
     return create_agent(
-        llm = llm,
+        model = llm,
         tools=[scrape_url]
     )
 
 
 # Second Agent
-def build_search_tool():
+def build_search_agent():
     return create_agent(
-        llm = llm,
+        model = llm,
         tools=[web_search]
     )
 
